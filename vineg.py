@@ -1,35 +1,56 @@
-# we need a text to encrypt
-text = "Hello zaira"
-# we need the key of the encrypt
-key = "python"
-# we need the alphabet to manipulate
-alphabet = '' # do not write manually
-a, z = ord("a"), ord("z")
-for char in range(a, z+1):
-    char = chr(char)
-    alphabet += char
+# 1. get direction
+while True:
+    user_direction = int(input("choose a direction: "))
+    if user_direction:
+        break
+    print("Choose from the list!")
 
-# We need to repeat the key
-rep_key = ''
-for i in range(len(text)):
-    rep_key += key[i % len(key)]
+# 2. get text
 
-enc_text = ''
-# iterate through text and to find the index and calculat the index:
-for text_char, key_char in zip(text, rep_key):
-    text_index = alphabet.find(text_char)
-    key_index = alphabet.find(key_char)
+while True:
+    if user_direction >= 1:
+        text = input("Write the text you want to Encrypt: ")
+    else:
+        text = input("Write the text you want to Decrypt: ")
+    if all(c.isalpha()  or c.isspace() for c in text):
+        break
+    print("Please enter a text! ")
+# 3. get key
+while True:
+    short_key = input("Write the encryption key: ")
+    if short_key.isalpha():
+        break
+    print("Please enter a text! ")
 
-    # calc the new index of each letter
-    new_index = (text_index + key_index) % len(alphabet)
-    enc_text += alphabet[new_index]
+def vinegere(user_text, user_key, user_direction):
+    key = ''
+    key_index = 0
+    for char in user_text:
+        if char == ' ':
+            key += ' '
+        else:
+            key += user_key[key_index % len(user_key)]
+            key_index += 1
 
-print(enc_text)
-    
+    alphabet = ''.join(chr(i) for i in range(ord('a'), ord('z') + 1))
 
+    encrypted_text = ''
+    for text_char, key_char in zip(user_text.lower(), key.lower()):
+        if text_char == ' ':
+            encrypted_text += ' '
+        else:
+            text_index = alphabet.find(text_char)
+            shift_index = alphabet.find(key_char)
 
-# outcomes:
-# reviewed the cipher.py file and updated it
-# practiced and tried to figur out how the vinegere works
-# learnt how to find the index myself
+            if user_direction >= 1:
+                new_index = (text_index + shift_index) % len(alphabet)
+            elif user_direction <= 1:
+                new_index = (text_index - shift_index) % len(alphabet)
 
+            encrypted_text += alphabet[new_index]
+
+    return encrypted_text
+
+result = vinegere(text, short_key, user_direction)
+
+print(result)
